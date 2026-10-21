@@ -14,7 +14,107 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      buzzes: {
+        Row: {
+          created_at: string
+          id: string
+          player_id: string
+          player_name: string
+          room_code: string
+          round: number
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          player_id: string
+          player_name: string
+          room_code: string
+          round: number
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          player_id?: string
+          player_name?: string
+          room_code?: string
+          round?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "buzzes_player_id_fkey"
+            columns: ["player_id"]
+            isOneToOne: false
+            referencedRelation: "players"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "buzzes_room_code_fkey"
+            columns: ["room_code"]
+            isOneToOne: false
+            referencedRelation: "rooms"
+            referencedColumns: ["code"]
+          },
+        ]
+      }
+      players: {
+        Row: {
+          created_at: string
+          id: string
+          name: string
+          room_code: string
+          score: number
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          name: string
+          room_code: string
+          score?: number
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          name?: string
+          room_code?: string
+          score?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "players_room_code_fkey"
+            columns: ["room_code"]
+            isOneToOne: false
+            referencedRelation: "rooms"
+            referencedColumns: ["code"]
+          },
+        ]
+      }
+      rooms: {
+        Row: {
+          buzzer_url: string | null
+          code: string
+          correct_url: string | null
+          created_at: string
+          round: number
+          wrong_url: string | null
+        }
+        Insert: {
+          buzzer_url?: string | null
+          code: string
+          correct_url?: string | null
+          created_at?: string
+          round?: number
+          wrong_url?: string | null
+        }
+        Update: {
+          buzzer_url?: string | null
+          code?: string
+          correct_url?: string | null
+          created_at?: string
+          round?: number
+          wrong_url?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
