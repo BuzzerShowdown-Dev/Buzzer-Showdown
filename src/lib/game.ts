@@ -19,7 +19,7 @@ export async function uploadSound(code: string, kind: "buzzer" | "correct" | "wr
   if (error) throw error;
   const { data, error: e2 } = await supabase.storage.from("sounds").createSignedUrl(path, 60 * 60 * 24 * 365);
   if (e2 || !data) throw e2;
-  const { error: e3 } = await supabase.from("rooms").update({ [`${kind}_url`]: data.signedUrl }).eq("code", code);
+  const { error: e3 } = await supabase.from("rooms").update(kind === "buzzer" ? { buzzer_url: data.signedUrl } : kind === "correct" ? { correct_url: data.signedUrl } : { wrong_url: data.signedUrl }).eq("code", code);
   if (e3) throw e3;
 }
 
@@ -30,7 +30,7 @@ export function subscribeRoom(code: string, onChange: () => void, onSfx?: (kind:
     .on("postgres_changes", { event: "*", schema: "public", table: "rooms", filter: `code=eq.${code}` }, onChange)
     .on("postgres_changes", { event: "*", schema: "public", table: "players", filter: `room_code=eq.${code}` }, onChange)
     .on("postgres_changes", { event: "*", schema: "public", table: "buzzes", filter: `room_code=eq.${code}` }, onChange)
-    .on("broadcast", { event: "sfx" }, (m) => onSfx?.(m.payload.kind))
+    .on("broadcast", { event: "sfx" }, (m) => onSfx?.(m["payload"].kind))
     .subscribe();
   return ch;
 }

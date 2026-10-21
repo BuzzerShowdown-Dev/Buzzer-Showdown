@@ -115,7 +115,7 @@ function PlayerPage() {
         {myPos >= 0 ? `#${myPos + 1}` : "BUZZ"}
       </button>
       <p className="h-8 font-display text-xl text-muted-foreground">
-        {myPos === 0 ? "YOU'RE FIRST!" : myPos > 0 ? "LOCKED — WAIT FOR RESET" : roundBuzzes.length ? `${roundBuzzes[0].player_name} buzzed first` : "GET READY…"}
+        {myPos === 0 ? "YOU'RE FIRST!" : myPos > 0 ? "LOCKED — WAIT FOR RESET" : roundBuzzes.length ? `${roundBuzzes[0]?.player_name} buzzed first` : "GET READY…"}
       </p>
     </main>
   );
