@@ -76,6 +76,9 @@ function HostPage() {
           <button onClick={() => navigator.clipboard?.writeText(link)} className="mt-1 break-all text-left text-sm text-muted-foreground underline">
             {link} (copy)
           </button>
+          <a href={`/screen/${code}`} target="_blank" rel="noreferrer" className="mt-1 block text-sm font-bold text-primary underline">
+            Open "who buzzed first" screen ↗
+          </a>
         </div>
         <div className="flex flex-wrap gap-3">
           <button onClick={() => sfx("correct")} className="rounded-2xl bg-accent px-6 py-4 font-display text-xl text-accent-foreground">✓ CORRECT</button>
