@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as HostCodeRouteImport } from './routes/host.$code'
 import { Route as RoomCodeRouteImport } from './routes/room.$code'
+import { Route as ScreenCodeRouteImport } from './routes/screen.$code'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -28,35 +29,44 @@ const RoomCodeRoute = RoomCodeRouteImport.update({
   path: '/room/$code',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ScreenCodeRoute = ScreenCodeRouteImport.update({
+  id: '/screen/$code',
+  path: '/screen/$code',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/host/$code': typeof HostCodeRoute
   '/room/$code': typeof RoomCodeRoute
+  '/screen/$code': typeof ScreenCodeRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/host/$code': typeof HostCodeRoute
   '/room/$code': typeof RoomCodeRoute
+  '/screen/$code': typeof ScreenCodeRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/host/$code': typeof HostCodeRoute
   '/room/$code': typeof RoomCodeRoute
+  '/screen/$code': typeof ScreenCodeRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/host/$code' | '/room/$code'
+  fullPaths: '/' | '/host/$code' | '/room/$code' | '/screen/$code'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/host/$code' | '/room/$code'
-  id: '__root__' | '/' | '/host/$code' | '/room/$code'
+  to: '/' | '/host/$code' | '/room/$code' | '/screen/$code'
+  id: '__root__' | '/' | '/host/$code' | '/room/$code' | '/screen/$code'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   HostCodeRoute: typeof HostCodeRoute
   RoomCodeRoute: typeof RoomCodeRoute
+  ScreenCodeRoute: typeof ScreenCodeRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -82,6 +92,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RoomCodeRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/screen/$code': {
+      id: '/screen/$code'
+      path: '/screen/$code'
+      fullPath: '/screen/$code'
+      preLoaderRoute: typeof ScreenCodeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -89,6 +106,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   HostCodeRoute: HostCodeRoute,
   RoomCodeRoute: RoomCodeRoute,
+  ScreenCodeRoute: ScreenCodeRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
