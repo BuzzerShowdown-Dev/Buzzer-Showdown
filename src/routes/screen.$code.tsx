@@ -48,8 +48,8 @@ function ScreenPage() {
   const ranked = [...players].sort((a, b) => b.score - a.score);
 
   return (
-    <div className="flex min-h-screen flex-col lg:flex-row">
-      <main className="flex flex-1 flex-col items-center justify-center gap-6 px-4 py-10 text-center">
+    <div className="flex min-h-screen flex-row">
+      <main className="flex min-w-0 flex-1 flex-col items-center justify-center gap-6 px-4 py-10 text-center">
         <p className="text-lg uppercase tracking-widest text-muted-foreground">Room {code} · Round {room.round}</p>
         {first ? (
           <>
