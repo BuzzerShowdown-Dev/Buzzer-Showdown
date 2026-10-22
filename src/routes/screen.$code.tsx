@@ -48,24 +48,24 @@ function ScreenPage() {
   const ranked = [...players].sort((a, b) => b.score - a.score);
 
   return (
-    <div className="flex min-h-screen flex-col lg:flex-row">
-      <main className="flex flex-1 flex-col items-center justify-center gap-6 px-4 py-10 text-center">
-        <p className="text-lg uppercase tracking-widest text-muted-foreground">Room {code} · Round {room.round}</p>
+    <div className="flex min-h-screen flex-row">
+      <main className="flex min-w-0 flex-1 flex-col items-center justify-center gap-6 px-4 py-10 text-center">
+        <p className="text-xs uppercase tracking-widest text-muted-foreground sm:text-lg">Room {code} · Round {room.round}</p>
         {first ? (
           <>
-            <p className="font-display text-3xl text-muted-foreground">FIRST TO BUZZ</p>
-            <h1 className="glow-text break-all text-7xl text-primary sm:text-9xl">{first.player_name}</h1>
+            <p className="font-display text-lg text-muted-foreground sm:text-3xl">FIRST TO BUZZ</p>
+            <h1 className="glow-text break-words text-3xl text-primary sm:text-7xl lg:text-9xl">{first.player_name}</h1>
           </>
         ) : (
-          <h1 className="font-display text-5xl text-muted-foreground sm:text-7xl">Waiting for a buzz…</h1>
+          <h1 className="font-display text-xl text-muted-foreground sm:text-5xl lg:text-7xl">Waiting for a buzz…</h1>
         )}
       </main>
       {room.show_leaderboard && (
-        <aside className="border-t border-border bg-card p-6 lg:w-96 lg:border-l lg:border-t-0">
-          <h2 className="mb-4 font-display text-3xl text-primary">LEADERBOARD</h2>
-          <ol className="space-y-2">
+        <aside className="flex w-28 shrink-0 flex-col border-l border-border bg-card p-2 sm:w-80 sm:p-6">
+          <h2 className="mb-2 font-display text-[10px] tracking-tight text-primary sm:mb-4 sm:text-3xl sm:tracking-normal">LEADERBOARD</h2>
+          <ol className="flex-1 space-y-1 overflow-y-auto sm:space-y-2">
             {ranked.map((p, i) => (
-              <li key={p.id} className="flex items-center justify-between rounded-xl bg-muted px-4 py-3 text-2xl font-bold">
+              <li key={p.id} className="flex items-center justify-between gap-1 rounded-lg bg-muted px-2 py-1 text-xs font-bold sm:gap-2 sm:rounded-xl sm:px-4 sm:py-3 sm:text-2xl">
                 <span className="truncate">{i + 1}. {p.name}</span>
                 <span className="font-display text-primary">{p.score}</span>
               </li>
