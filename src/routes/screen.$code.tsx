@@ -50,14 +50,14 @@ function ScreenPage() {
   return (
     <div className="flex min-h-screen flex-row">
       <main className="flex min-w-0 flex-1 flex-col items-center justify-center gap-6 px-4 py-10 text-center">
-        <p className="text-lg uppercase tracking-widest text-muted-foreground">Room {code} · Round {room.round}</p>
+        <p className="text-xs uppercase tracking-widest text-muted-foreground sm:text-lg">Room {code} · Round {room.round}</p>
         {first ? (
           <>
-            <p className="font-display text-3xl text-muted-foreground">FIRST TO BUZZ</p>
-            <h1 className="glow-text break-all text-7xl text-primary sm:text-9xl">{first.player_name}</h1>
+            <p className="font-display text-lg text-muted-foreground sm:text-3xl">FIRST TO BUZZ</p>
+            <h1 className="glow-text break-words text-3xl text-primary sm:text-7xl lg:text-9xl">{first.player_name}</h1>
           </>
         ) : (
-          <h1 className="font-display text-5xl text-muted-foreground sm:text-7xl">Waiting for a buzz…</h1>
+          <h1 className="font-display text-xl text-muted-foreground sm:text-5xl lg:text-7xl">Waiting for a buzz…</h1>
         )}
       </main>
       {room.show_leaderboard && (
