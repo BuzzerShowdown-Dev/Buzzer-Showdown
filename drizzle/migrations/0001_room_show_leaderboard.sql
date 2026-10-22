@@ -1,0 +1,1 @@
+ALTER TABLE public.rooms ADD COLUMN show_leaderboard boolean NOT NULL DEFAULT false;

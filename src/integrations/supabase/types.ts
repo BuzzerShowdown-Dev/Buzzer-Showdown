@@ -95,6 +95,7 @@ export type Database = {
           correct_url: string | null
           created_at: string
           round: number
+          show_leaderboard: boolean
           wrong_url: string | null
         }
         Insert: {
@@ -103,6 +104,7 @@ export type Database = {
           correct_url?: string | null
           created_at?: string
           round?: number
+          show_leaderboard?: boolean
           wrong_url?: string | null
         }
         Update: {
@@ -111,6 +113,7 @@ export type Database = {
           correct_url?: string | null
           created_at?: string
           round?: number
+          show_leaderboard?: boolean
           wrong_url?: string | null
         }
         Relationships: []
