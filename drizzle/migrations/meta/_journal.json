@@ -8,6 +8,13 @@
       "when": 1792598846689,
       "tag": "0000_buzzer",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1792655182671,
+      "tag": "0001_room_show_leaderboard",
+      "breakpoints": true
     }
   ]
 }

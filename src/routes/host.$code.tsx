@@ -79,6 +79,15 @@ function HostPage() {
           <a href={`/screen/${code}`} target="_blank" rel="noreferrer" className="mt-1 block text-sm font-bold text-primary underline">
             Open "who buzzed first" screen ↗
           </a>
+          <label className="mt-2 flex items-center gap-2 text-sm font-bold">
+            <input
+              type="checkbox"
+              className="h-5 w-5 accent-primary"
+              checked={!!room.show_leaderboard}
+              onChange={(e) => supabase.from("rooms").update({ show_leaderboard: e.target.checked }).eq("code", code).then(refresh)}
+            />
+            Show leaderboard on that screen
+          </label>
         </div>
         <div className="flex flex-wrap gap-3">
           <button onClick={() => sfx("correct")} className="rounded-2xl bg-accent px-6 py-4 font-display text-xl text-accent-foreground">✓ CORRECT</button>

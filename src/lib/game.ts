@@ -1,6 +1,6 @@
 import { supabase } from "@/integrations/supabase/client";
 
-export type Room = { code: string; round: number; buzzer_url: string | null; correct_url: string | null; wrong_url: string | null };
+export type Room = { code: string; round: number; buzzer_url: string | null; correct_url: string | null; wrong_url: string | null; show_leaderboard?: boolean };
 export type Player = { id: string; room_code: string; name: string; score: number };
 export type Buzz = { id: string; player_id: string; player_name: string; round: number; created_at: string };
 
