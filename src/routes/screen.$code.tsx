@@ -61,11 +61,11 @@ function ScreenPage() {
         )}
       </main>
       {room.show_leaderboard && (
-        <aside className="border-t border-border bg-card p-6 lg:w-96 lg:border-l lg:border-t-0">
-          <h2 className="mb-4 font-display text-3xl text-primary">LEADERBOARD</h2>
-          <ol className="space-y-2">
+        <aside className="flex w-52 shrink-0 flex-col border-l border-border bg-card p-4 sm:w-80 sm:p-6">
+          <h2 className="mb-4 font-display text-xl text-primary sm:text-3xl">LEADERBOARD</h2>
+          <ol className="flex-1 space-y-2 overflow-y-auto">
             {ranked.map((p, i) => (
-              <li key={p.id} className="flex items-center justify-between rounded-xl bg-muted px-4 py-3 text-2xl font-bold">
+              <li key={p.id} className="flex items-center justify-between gap-2 rounded-xl bg-muted px-3 py-2 text-lg font-bold sm:px-4 sm:py-3 sm:text-2xl">
                 <span className="truncate">{i + 1}. {p.name}</span>
                 <span className="font-display text-primary">{p.score}</span>
               </li>
