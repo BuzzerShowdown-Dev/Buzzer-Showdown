@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useCallback, useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { loadRoom, type Buzz, type Room } from "@/lib/game";
+import { loadRoom, type Buzz, type Player, type Room } from "@/lib/game";
 
 export const Route = createFileRoute("/screen/$code")({
   head: ({ params }) => ({
@@ -21,11 +21,13 @@ function ScreenPage() {
   const { code } = Route.useParams();
   const [room, setRoom] = useState<Room | null | undefined>(undefined);
   const [buzzes, setBuzzes] = useState<Buzz[]>([]);
+  const [players, setPlayers] = useState<Player[]>([]);
 
   const refresh = useCallback(async () => {
     const d = await loadRoom(code);
     setRoom(d.room);
     setBuzzes(d.buzzes);
+    setPlayers(d.players);
   }, [code]);
 
   useEffect(() => {
@@ -34,6 +36,7 @@ function ScreenPage() {
       .channel(`screen-${code}`)
       .on("postgres_changes", { event: "*", schema: "public", table: "rooms", filter: `code=eq.${code}` }, refresh)
       .on("postgres_changes", { event: "*", schema: "public", table: "buzzes", filter: `room_code=eq.${code}` }, refresh)
+      .on("postgres_changes", { event: "*", schema: "public", table: "players", filter: `room_code=eq.${code}` }, refresh)
       .subscribe();
     return () => void supabase.removeChannel(ch);
   }, [code, refresh]);
@@ -42,18 +45,35 @@ function ScreenPage() {
   if (room === null) return <p className="p-10 text-center font-display text-3xl">Room not found</p>;
 
   const first = buzzes.find((b) => b.round === room.round);
+  const ranked = [...players].sort((a, b) => b.score - a.score);
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center gap-6 px-4 text-center">
-      <p className="text-lg uppercase tracking-widest text-muted-foreground">Room {code} · Round {room.round}</p>
-      {first ? (
-        <>
-          <p className="font-display text-3xl text-muted-foreground">FIRST TO BUZZ</p>
-          <h1 className="glow-text break-all text-7xl text-primary sm:text-9xl">{first.player_name}</h1>
-        </>
-      ) : (
-        <h1 className="font-display text-5xl text-muted-foreground sm:text-7xl">Waiting for a buzz…</h1>
+    <div className="flex min-h-screen flex-col lg:flex-row">
+      <main className="flex flex-1 flex-col items-center justify-center gap-6 px-4 py-10 text-center">
+        <p className="text-lg uppercase tracking-widest text-muted-foreground">Room {code} · Round {room.round}</p>
+        {first ? (
+          <>
+            <p className="font-display text-3xl text-muted-foreground">FIRST TO BUZZ</p>
+            <h1 className="glow-text break-all text-7xl text-primary sm:text-9xl">{first.player_name}</h1>
+          </>
+        ) : (
+          <h1 className="font-display text-5xl text-muted-foreground sm:text-7xl">Waiting for a buzz…</h1>
+        )}
+      </main>
+      {room.show_leaderboard && (
+        <aside className="border-t border-border bg-card p-6 lg:w-96 lg:border-l lg:border-t-0">
+          <h2 className="mb-4 font-display text-3xl text-primary">LEADERBOARD</h2>
+          <ol className="space-y-2">
+            {ranked.map((p, i) => (
+              <li key={p.id} className="flex items-center justify-between rounded-xl bg-muted px-4 py-3 text-2xl font-bold">
+                <span className="truncate">{i + 1}. {p.name}</span>
+                <span className="font-display text-primary">{p.score}</span>
+              </li>
+            ))}
+            {ranked.length === 0 && <li className="text-muted-foreground">No players yet</li>}
+          </ol>
+        </aside>
       )}
-    </main>
+    </div>
   );
 }
