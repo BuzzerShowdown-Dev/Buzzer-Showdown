@@ -90,28 +90,37 @@ export type Database = {
       }
       rooms: {
         Row: {
+          auto_reset: boolean
           buzzer_url: string | null
           code: string
           correct_url: string | null
           created_at: string
+          freeze_mode: boolean
+          freeze_since_round: number
           round: number
           show_leaderboard: boolean
           wrong_url: string | null
         }
         Insert: {
+          auto_reset?: boolean
           buzzer_url?: string | null
           code: string
           correct_url?: string | null
           created_at?: string
+          freeze_mode?: boolean
+          freeze_since_round?: number
           round?: number
           show_leaderboard?: boolean
           wrong_url?: string | null
         }
         Update: {
+          auto_reset?: boolean
           buzzer_url?: string | null
           code?: string
           correct_url?: string | null
           created_at?: string
+          freeze_mode?: boolean
+          freeze_since_round?: number
           round?: number
           show_leaderboard?: boolean
           wrong_url?: string | null

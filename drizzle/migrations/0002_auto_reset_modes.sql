@@ -1,0 +1,1 @@
+ALTER TABLE public.rooms ADD COLUMN auto_reset boolean NOT NULL DEFAULT false, ADD COLUMN freeze_mode boolean NOT NULL DEFAULT false, ADD COLUMN freeze_since_round integer NOT NULL DEFAULT 0;

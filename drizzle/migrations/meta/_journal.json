@@ -15,6 +15,13 @@
       "when": 1792655182671,
       "tag": "0001_room_show_leaderboard",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1792750625947,
+      "tag": "0002_auto_reset_modes",
+      "breakpoints": true
     }
   ]
 }
