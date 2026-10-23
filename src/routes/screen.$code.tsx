@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useCallback, useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { loadRoom, type Buzz, type Player, type Room } from "@/lib/game";
+import { addBuzz, loadRoom, type Buzz, type Player, type Room } from "@/lib/game";
 
 export const Route = createFileRoute("/screen/$code")({
   head: ({ params }) => ({
@@ -35,7 +35,10 @@ function ScreenPage() {
     const ch = supabase
       .channel(`screen-${code}`)
       .on("postgres_changes", { event: "*", schema: "public", table: "rooms", filter: `code=eq.${code}` }, refresh)
-      .on("postgres_changes", { event: "*", schema: "public", table: "buzzes", filter: `room_code=eq.${code}` }, refresh)
+      .on("postgres_changes", { event: "*", schema: "public", table: "buzzes", filter: `room_code=eq.${code}` }, (p) => {
+        if (p.eventType === "INSERT") setBuzzes((l) => addBuzz(l, p.new as Buzz));
+        else refresh();
+      })
       .on("postgres_changes", { event: "*", schema: "public", table: "players", filter: `room_code=eq.${code}` }, refresh)
       .subscribe();
     return () => void supabase.removeChannel(ch);

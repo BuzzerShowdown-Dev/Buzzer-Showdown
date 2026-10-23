@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useCallback, useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { isFrozen, loadRoom, playUrl, subscribeRoom, type Buzz, type Player, type Room } from "@/lib/game";
+import { addBuzz, isFrozen, loadRoom, playUrl, preloadSounds, subscribeRoom, type Buzz, type Player, type Room } from "@/lib/game";
 
 export const Route = createFileRoute("/room/$code")({
   head: ({ params }) => ({
@@ -26,6 +26,7 @@ function PlayerPage() {
 
   const refresh = useCallback(async () => {
     const d = await loadRoom(code);
+    preloadSounds(d.room?.buzzer_url, d.room?.correct_url, d.room?.wrong_url);
     setRoom(d.room);
     setPlayers(d.players);
     setBuzzes(d.buzzes);
@@ -42,7 +43,7 @@ function PlayerPage() {
         playUrl(kind === "correct" ? r?.correct_url : r?.wrong_url);
         return r;
       });
-    });
+    }, (b) => setBuzzes((l) => addBuzz(l, b)));
     return () => void supabase.removeChannel(ch);
   }, [code, refresh]);
 
@@ -69,8 +70,9 @@ function PlayerPage() {
     setPending(true);
     playUrl(room?.buzzer_url);
     navigator.vibrate?.(80);
-    await supabase.from("buzzes").insert({ room_code: code, player_id: me.id, player_name: me.name, round });
-    await refresh();
+    const { data } = await supabase.from("buzzes").insert({ room_code: code, player_id: me.id, player_name: me.name, round }).select().single();
+    if (data) setBuzzes((l) => addBuzz(l, data as Buzz));
+    else await refresh();
     setPending(false);
   }
 
