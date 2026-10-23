@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { RealtimeChannel } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
-import { AUTO_RESET_MS, FREEZE_LIMIT, isFrozen, loadRoom, playUrl, subscribeRoom, uploadSound, type Buzz, type Player, type Room } from "@/lib/game";
+import { AUTO_RESET_MS, FREEZE_LIMIT, loadRoom, playUrl, subscribeRoom, uploadSound, type Buzz, type Player, type Room } from "@/lib/game";
 
 export const Route = createFileRoute("/host/$code")({
   head: ({ params }) => ({
