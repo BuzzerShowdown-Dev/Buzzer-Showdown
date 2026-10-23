@@ -62,7 +62,7 @@ export async function uploadSound(code: string, kind: "buzzer" | "correct" | "wr
  */
 export function subscribeRoom(code: string, onChange: () => void, onSfx?: (kind: "correct" | "wrong") => void, onBuzz?: (b: Buzz) => void) {
   const ch = supabase
-    .channel(`room-${code}-${Math.random().toString(36).slice(2)}`)
+    .channel(`room-${code}`)
     .on("postgres_changes", { event: "*", schema: "public", table: "rooms", filter: `code=eq.${code}` }, onChange)
     .on("postgres_changes", { event: "*", schema: "public", table: "players", filter: `room_code=eq.${code}` }, onChange)
     .on("postgres_changes", { event: "*", schema: "public", table: "buzzes", filter: `room_code=eq.${code}` }, (p) => {
