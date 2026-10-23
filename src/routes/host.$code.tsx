@@ -2,15 +2,17 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { RealtimeChannel } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
-import { AUTO_RESET_MS, FREEZE_LIMIT, loadRoom, playUrl, subscribeRoom, uploadSound, type Buzz, type Player, type Room } from "@/lib/game";
+import { addBuzz, AUTO_RESET_MS, FREEZE_LIMIT, loadRoom, playUrl, preloadSounds, subscribeRoom, uploadSound, type Buzz, type Player, type Room } from "@/lib/game";
 
 export const Route = createFileRoute("/host/$code")({
   head: ({ params }) => ({
     meta: [
-      { title: `Host ${params.code} — Buzz!` },
-      { name: "description", content: "Host control panel: buzz order, sounds and scoreboard." },
-      { property: "og:title", content: `Hosting room ${params.code}` },
-      { property: "og:description", content: "Run your quiz with live buzz order and scores." },
+      { title: `Host ${params.code} — Buzzer Showdown` },
+      { name: "description", content: "Buzzer Showdown host control panel: buzz order, sounds and scoreboard." },
+      { property: "og:title", content: `Hosting room ${params.code} — Buzzer Showdown` },
+      { property: "og:description", content: "Run your quiz with live buzz order and scores on Buzzer Showdown." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: HostPage,
@@ -27,18 +29,14 @@ function HostPage() {
   const [players, setPlayers] = useState<Player[]>([]);
   const [buzzes, setBuzzes] = useState<Buzz[]>([]);
   const [link, setLink] = useState("");
+  const [amount, setAmount] = useState(1);
   const chRef = useRef<RealtimeChannel | null>(null);
-  const seen = useRef<Set<string>>(new Set());
   const roomRef = useRef<Room | null>(null);
 
   const refresh = useCallback(async () => {
     const d = await loadRoom(code);
-    // play buzzer on host for new buzzes
-    const fresh = d.buzzes.filter((b) => !seen.current.has(b.id));
-    if (seen.current.size && fresh.length) playUrl(d.room?.buzzer_url);
-    d.buzzes.forEach((b) => seen.current.add(b.id));
-    if (!seen.current.size) seen.current.add("init");
     roomRef.current = d.room;
+    preloadSounds(d.room?.buzzer_url, d.room?.correct_url, d.room?.wrong_url);
     setRoom(d.room);
     setPlayers(d.players);
     setBuzzes(d.buzzes);
@@ -47,7 +45,10 @@ function HostPage() {
   useEffect(() => {
     setLink(`${window.location.origin}/room/${code}`);
     refresh();
-    const ch = subscribeRoom(code, refresh);
+    const ch = subscribeRoom(code, refresh, undefined, (b) => {
+      playUrl(roomRef.current?.buzzer_url);
+      setBuzzes((l) => addBuzz(l, b));
+    });
     chRef.current = ch;
     return () => void supabase.removeChannel(ch);
   }, [code, refresh]);
