@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useCallback, useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { loadRoom, playUrl, subscribeRoom, type Buzz, type Player, type Room } from "@/lib/game";
+import { isFrozen, loadRoom, playUrl, subscribeRoom, type Buzz, type Player, type Room } from "@/lib/game";
 
 export const Route = createFileRoute("/room/$code")({
   head: ({ params }) => ({
@@ -50,7 +50,8 @@ function PlayerPage() {
   const round = room?.round ?? 0;
   const roundBuzzes = buzzes.filter((b) => b.round === round);
   const myPos = roundBuzzes.findIndex((b) => b.player_id === playerId);
-  const locked = myPos >= 0 || pending;
+  const frozen = myPos < 0 && isFrozen(room, buzzes, playerId);
+  const locked = myPos >= 0 || pending || frozen;
 
   async function join(e: React.FormEvent) {
     e.preventDefault();
@@ -112,10 +113,10 @@ function PlayerPage() {
         aria-label="Buzz"
         className="buzzer aspect-square w-[min(80vw,60vh)] rounded-full font-display text-5xl text-destructive-foreground sm:text-7xl"
       >
-        {myPos >= 0 ? `#${myPos + 1}` : "BUZZ"}
+        {myPos >= 0 ? `#${myPos + 1}` : frozen ? "FROZEN" : "BUZZ"}
       </button>
       <p className="h-8 font-display text-xl text-muted-foreground">
-        {myPos === 0 ? "YOU'RE FIRST!" : myPos > 0 ? "LOCKED — WAIT FOR RESET" : roundBuzzes.length ? `${roundBuzzes[0]?.player_name} buzzed first` : "GET READY…"}
+        {frozen ? "FROZEN OUT — WAIT FOR HOST" : myPos === 0 ? "YOU'RE FIRST!" : myPos > 0 ? "LOCKED — WAIT FOR RESET" : roundBuzzes.length ? `${roundBuzzes[0]?.player_name} buzzed first` : "GET READY…"}
       </p>
     </main>
   );
