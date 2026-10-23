@@ -113,10 +113,10 @@ function PlayerPage() {
         aria-label="Buzz"
         className="buzzer aspect-square w-[min(80vw,60vh)] rounded-full font-display text-5xl text-destructive-foreground sm:text-7xl"
       >
-        {myPos >= 0 ? `#${myPos + 1}` : "BUZZ"}
+        {myPos >= 0 ? `#${myPos + 1}` : frozen ? "FROZEN" : "BUZZ"}
       </button>
       <p className="h-8 font-display text-xl text-muted-foreground">
-        {myPos === 0 ? "YOU'RE FIRST!" : myPos > 0 ? "LOCKED — WAIT FOR RESET" : roundBuzzes.length ? `${roundBuzzes[0]?.player_name} buzzed first` : "GET READY…"}
+        {frozen ? "FROZEN OUT — WAIT FOR HOST" : myPos === 0 ? "YOU'RE FIRST!" : myPos > 0 ? "LOCKED — WAIT FOR RESET" : roundBuzzes.length ? `${roundBuzzes[0]?.player_name} buzzed first` : "GET READY…"}
       </p>
     </main>
   );
