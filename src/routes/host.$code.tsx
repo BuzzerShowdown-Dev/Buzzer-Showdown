@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { RealtimeChannel } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
-import { loadRoom, playUrl, subscribeRoom, uploadSound, type Buzz, type Player, type Room } from "@/lib/game";
+import { AUTO_RESET_MS, FREEZE_LIMIT, isFrozen, loadRoom, playUrl, subscribeRoom, uploadSound, type Buzz, type Player, type Room } from "@/lib/game";
 
 export const Route = createFileRoute("/host/$code")({
   head: ({ params }) => ({
@@ -55,8 +55,21 @@ function HostPage() {
   const round = room?.round ?? 0;
   const order = buzzes.filter((b) => b.round === round);
   const t0 = order[0] ? new Date(order[0].created_at).getTime() : 0;
+  const autoOn = !!room?.auto_reset || !!room?.freeze_mode;
 
-  const reset = () => supabase.from("rooms").update({ round: round + 1 }).eq("code", code).then(refresh);
+  // Manual reset also clears anyone frozen out.
+  const reset = () => supabase.from("rooms").update({ round: round + 1, freeze_since_round: round + 1 }).eq("code", code).then(refresh);
+  const setMode = (patch: { auto_reset?: boolean; freeze_mode?: boolean }) =>
+    supabase.from("rooms").update({ ...patch, ...(patch.freeze_mode ? { freeze_since_round: round } : {}) }).eq("code", code).then(refresh);
+
+  // Auto reset: a few seconds after the first buzz, open the next round.
+  useEffect(() => {
+    if (!autoOn || order.length === 0) return;
+    const t = setTimeout(() => {
+      supabase.from("rooms").update({ round: round + 1 }).eq("code", code).eq("round", round).then(refresh);
+    }, AUTO_RESET_MS);
+    return () => clearTimeout(t);
+  }, [autoOn, order.length > 0, round, code, refresh]);
   const score = (p: Player, d: number) => supabase.from("players").update({ score: p.score + d }).eq("id", p.id).then(refresh);
   const kick = (p: Player) => supabase.from("players").delete().eq("id", p.id).then(refresh);
   const sfx = (kind: "correct" | "wrong") => {
@@ -93,6 +106,18 @@ function HostPage() {
           <button onClick={() => sfx("correct")} className="rounded-2xl bg-accent px-6 py-4 font-display text-xl text-accent-foreground">✓ CORRECT</button>
           <button onClick={() => sfx("wrong")} className="rounded-2xl bg-destructive px-6 py-4 font-display text-xl text-destructive-foreground">✗ WRONG</button>
           <button onClick={reset} className="rounded-2xl bg-primary px-6 py-4 font-display text-xl text-primary-foreground">RESET BUZZERS</button>
+          <button
+            onClick={() => setMode({ auto_reset: !room.auto_reset, freeze_mode: false })}
+            className={`rounded-2xl px-6 py-4 font-display text-xl ${room.auto_reset ? "bg-primary text-primary-foreground" : "bg-secondary text-secondary-foreground"}`}
+          >
+            AUTO RESET: {room.auto_reset ? "ON" : "OFF"}
+          </button>
+          <button
+            onClick={() => setMode({ freeze_mode: !room.freeze_mode, auto_reset: false })}
+            className={`rounded-2xl px-6 py-4 font-display text-xl ${room.freeze_mode ? "bg-primary text-primary-foreground" : "bg-secondary text-secondary-foreground"}`}
+          >
+            AUTO + FREEZE AFTER {FREEZE_LIMIT}: {room.freeze_mode ? "ON" : "OFF"}
+          </button>
         </div>
       </header>
 

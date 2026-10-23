@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useCallback, useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { loadRoom, playUrl, subscribeRoom, type Buzz, type Player, type Room } from "@/lib/game";
+import { isFrozen, loadRoom, playUrl, subscribeRoom, type Buzz, type Player, type Room } from "@/lib/game";
 
 export const Route = createFileRoute("/room/$code")({
   head: ({ params }) => ({
@@ -50,7 +50,8 @@ function PlayerPage() {
   const round = room?.round ?? 0;
   const roundBuzzes = buzzes.filter((b) => b.round === round);
   const myPos = roundBuzzes.findIndex((b) => b.player_id === playerId);
-  const locked = myPos >= 0 || pending;
+  const frozen = myPos < 0 && isFrozen(room, buzzes, playerId);
+  const locked = myPos >= 0 || pending || frozen;
 
   async function join(e: React.FormEvent) {
     e.preventDefault();

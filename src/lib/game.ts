@@ -1,6 +1,17 @@
 import { supabase } from "@/integrations/supabase/client";
 
-export type Room = { code: string; round: number; buzzer_url: string | null; correct_url: string | null; wrong_url: string | null; show_leaderboard?: boolean };
+export type Room = { code: string; round: number; buzzer_url: string | null; correct_url: string | null; wrong_url: string | null; show_leaderboard?: boolean; auto_reset?: boolean; freeze_mode?: boolean; freeze_since_round?: number };
+
+/** Buzzes allowed per player in freeze mode before they're frozen out. */
+export const FREEZE_LIMIT = 2;
+/** Delay before an automatic reset after the first buzz of a round. */
+export const AUTO_RESET_MS = 3000;
+
+export function isFrozen(room: Pick<Room, "freeze_mode" | "freeze_since_round"> | null | undefined, buzzes: Pick<Buzz, "player_id" | "round">[], playerId: string | null) {
+  if (!room?.freeze_mode || !playerId) return false;
+  const since = room.freeze_since_round ?? 0;
+  return buzzes.filter((b) => b.player_id === playerId && b.round >= since).length >= FREEZE_LIMIT;
+}
 export type Player = { id: string; room_code: string; name: string; score: number };
 export type Buzz = { id: string; player_id: string; player_name: string; round: number; created_at: string };
 
