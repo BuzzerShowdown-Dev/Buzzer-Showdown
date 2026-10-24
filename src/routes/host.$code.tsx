@@ -71,7 +71,7 @@ function HostPage() {
     }, AUTO_RESET_MS);
     return () => clearTimeout(t);
   }, [autoOn, order.length > 0, round, code, refresh]);
-  const score = (p: Player, d: number) => supabase.from("players").update({ score: p.score + d }).eq("id", p.id).then(refresh);
+  const score = (p: Player, d: number) => supabase.from("players").update({ score: Math.max(0, p.score + d * amount) }).eq("id", p.id).then(refresh);
   const kick = (p: Player) => supabase.from("players").delete().eq("id", p.id).then(refresh);
   const sfx = (kind: "correct" | "wrong") => {
     playUrl(kind === "correct" ? room?.correct_url : room?.wrong_url);
@@ -142,7 +142,19 @@ function HostPage() {
         </section>
 
         <section className="rounded-3xl border border-border bg-card p-5">
-          <h2 className="mb-4 text-2xl">SCOREBOARD</h2>
+          <div className="mb-4 flex items-center justify-between gap-3">
+            <h2 className="text-2xl">SCOREBOARD</h2>
+            <label className="flex items-center gap-2 text-sm font-bold">
+              Points per tap
+              <input
+                type="number"
+                min={1}
+                value={amount}
+                onChange={(e) => setAmount(Math.max(1, Math.round(Number(e.target.value) || 1)))}
+                className="w-20 rounded-xl border border-border bg-background px-3 py-2 text-center font-display text-xl"
+              />
+            </label>
+          </div>
           {players.length === 0 && <p className="py-8 text-center text-muted-foreground">No players yet — share the code!</p>}
           <ul className="space-y-2">
             {[...players].sort((a, b) => b.score - a.score).map((p) => (
