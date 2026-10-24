@@ -6,9 +6,9 @@ import { makeCode } from "@/lib/game";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Buzz! — Quiz Buzzer for Game Night" },
+      { title: "Buzzer Showdown — Quiz Buzzer for Game Night" },
       { name: "description", content: "Host a quiz room or join with a 4-letter code and hit the big red buzzer." },
-      { property: "og:title", content: "Buzz! — Quiz Buzzer" },
+      { property: "og:title", content: "Buzzer Showdown — Quiz Buzzer" },
       { property: "og:description", content: "Host a quiz room or join with a 4-letter code." },
     ],
   }),
@@ -39,7 +39,7 @@ function Index() {
   return (
     <main className="mx-auto flex min-h-screen max-w-md flex-col justify-center gap-10 px-6 py-12">
       <div className="text-center">
-        <h1 className="glow-text text-7xl text-primary">BUZZ!</h1>
+        <h1 className="glow-text text-7xl text-primary">BUZZER SHOWDOWN</h1>
         <p className="mt-3 text-lg text-muted-foreground">The quiz show buzzer</p>
       </div>
       <form
