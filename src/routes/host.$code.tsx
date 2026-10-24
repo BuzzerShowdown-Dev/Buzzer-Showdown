@@ -195,3 +195,32 @@ function SoundSlot({ code, kind, label, url, onDone }: { code: string; kind: "bu
     </div>
   );
 }
+
+function ScoreRow({ p, onSet, onKick }: { p: Player; onSet: (p: Player, v: number) => unknown; onKick: (p: Player) => unknown }) {
+  const [val, setVal] = useState("");
+  const n = Math.round(Number(val));
+  const ok = val.trim() !== "" && Number.isFinite(n);
+  const apply = (mode: "add" | "set") => {
+    if (!ok) return;
+    onSet(p, mode === "add" ? p.score + n : n);
+    setVal("");
+  };
+  return (
+    <li className="flex flex-wrap items-center gap-2 rounded-2xl bg-secondary px-4 py-2">
+      <span className="min-w-0 flex-1 truncate text-xl font-bold">{p.name}</span>
+      <span className="w-14 text-center font-display text-3xl text-primary">{p.score}</span>
+      <input
+        type="number"
+        inputMode="numeric"
+        placeholder="pts"
+        value={val}
+        onChange={(e) => setVal(e.target.value)}
+        onKeyDown={(e) => e.key === "Enter" && apply("add")}
+        className="w-20 rounded-xl border border-border bg-background px-2 py-2 text-center font-display text-xl"
+      />
+      <button disabled={!ok} onClick={() => apply("add")} className="h-11 rounded-xl bg-accent px-3 font-display text-accent-foreground disabled:opacity-40">ADD</button>
+      <button disabled={!ok} onClick={() => apply("set")} className="h-11 rounded-xl bg-muted px-3 font-display disabled:opacity-40">SET</button>
+      <button onClick={() => onKick(p)} aria-label="Remove" className="px-2 text-muted-foreground">✕</button>
+    </li>
+  );
+}
