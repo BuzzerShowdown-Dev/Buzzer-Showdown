@@ -29,7 +29,6 @@ function HostPage() {
   const [players, setPlayers] = useState<Player[]>([]);
   const [buzzes, setBuzzes] = useState<Buzz[]>([]);
   const [link, setLink] = useState("");
-  const [amount, setAmount] = useState(1);
   const chRef = useRef<RealtimeChannel | null>(null);
   const roomRef = useRef<Room | null>(null);
 
@@ -71,7 +70,7 @@ function HostPage() {
     }, AUTO_RESET_MS);
     return () => clearTimeout(t);
   }, [autoOn, order.length > 0, round, code, refresh]);
-  const score = (p: Player, d: number) => supabase.from("players").update({ score: Math.max(0, p.score + d * amount) }).eq("id", p.id).then(refresh);
+  const setScore = (p: Player, value: number) => supabase.from("players").update({ score: Math.max(0, Math.round(value)) }).eq("id", p.id).then(refresh);
   const kick = (p: Player) => supabase.from("players").delete().eq("id", p.id).then(refresh);
   const sfx = (kind: "correct" | "wrong") => {
     playUrl(kind === "correct" ? room?.correct_url : room?.wrong_url);
@@ -142,29 +141,11 @@ function HostPage() {
         </section>
 
         <section className="rounded-3xl border border-border bg-card p-5">
-          <div className="mb-4 flex items-center justify-between gap-3">
-            <h2 className="text-2xl">SCOREBOARD</h2>
-            <label className="flex items-center gap-2 text-sm font-bold">
-              Points per tap
-              <input
-                type="number"
-                min={1}
-                value={amount}
-                onChange={(e) => setAmount(Math.max(1, Math.round(Number(e.target.value) || 1)))}
-                className="w-20 rounded-xl border border-border bg-background px-3 py-2 text-center font-display text-xl"
-              />
-            </label>
-          </div>
+          <h2 className="mb-4 text-2xl">SCOREBOARD</h2>
           {players.length === 0 && <p className="py-8 text-center text-muted-foreground">No players yet — share the code!</p>}
           <ul className="space-y-2">
             {[...players].sort((a, b) => b.score - a.score).map((p) => (
-              <li key={p.id} className="flex items-center gap-3 rounded-2xl bg-secondary px-4 py-2">
-                <span className="flex-1 truncate text-xl font-bold">{p.name}</span>
-                <button onClick={() => score(p, -1)} className="h-12 w-12 rounded-xl bg-muted font-display text-2xl">−</button>
-                <span className="w-14 text-center font-display text-3xl text-primary">{p.score}</span>
-                <button onClick={() => score(p, 1)} className="h-12 w-12 rounded-xl bg-accent font-display text-2xl text-accent-foreground">+</button>
-                <button onClick={() => kick(p)} aria-label="Remove" className="px-2 text-muted-foreground">✕</button>
-              </li>
+              <ScoreRow key={p.id} p={p} onSet={setScore} onKick={kick} />
             ))}
           </ul>
         </section>
@@ -212,5 +193,34 @@ function SoundSlot({ code, kind, label, url, onDone }: { code: string; kind: "bu
         <button disabled={!url} onClick={() => playUrl(url)} className="rounded-xl bg-muted px-4 font-bold disabled:opacity-40">▶</button>
       </div>
     </div>
+  );
+}
+
+function ScoreRow({ p, onSet, onKick }: { p: Player; onSet: (p: Player, v: number) => unknown; onKick: (p: Player) => unknown }) {
+  const [val, setVal] = useState("");
+  const n = Math.round(Number(val));
+  const ok = val.trim() !== "" && Number.isFinite(n);
+  const apply = (mode: "add" | "set") => {
+    if (!ok) return;
+    onSet(p, mode === "add" ? p.score + n : n);
+    setVal("");
+  };
+  return (
+    <li className="flex flex-wrap items-center gap-2 rounded-2xl bg-secondary px-4 py-2">
+      <span className="min-w-0 flex-1 truncate text-xl font-bold">{p.name}</span>
+      <span className="w-14 text-center font-display text-3xl text-primary">{p.score}</span>
+      <input
+        type="number"
+        inputMode="numeric"
+        placeholder="pts"
+        value={val}
+        onChange={(e) => setVal(e.target.value)}
+        onKeyDown={(e) => e.key === "Enter" && apply("add")}
+        className="w-20 rounded-xl border border-border bg-background px-2 py-2 text-center font-display text-xl"
+      />
+      <button disabled={!ok} onClick={() => apply("add")} className="h-11 rounded-xl bg-accent px-3 font-display text-accent-foreground disabled:opacity-40">ADD</button>
+      <button disabled={!ok} onClick={() => apply("set")} className="h-11 rounded-xl bg-muted px-3 font-display disabled:opacity-40">SET</button>
+      <button onClick={() => onKick(p)} aria-label="Remove" className="px-2 text-muted-foreground">✕</button>
+    </li>
   );
 }
