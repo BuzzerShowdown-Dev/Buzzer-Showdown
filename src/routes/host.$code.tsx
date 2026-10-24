@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { RealtimeChannel } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
+import { JoinQR } from "@/components/JoinQR";
 import { addBuzz, AUTO_RESET_MS, FREEZE_LIMIT, loadRoom, playUrl, preloadSounds, subscribeRoom, uploadSound, type Buzz, type Player, type Room } from "@/lib/game";
 
 export const Route = createFileRoute("/host/$code")({
@@ -101,6 +102,9 @@ function HostPage() {
             />
             Show leaderboard on that screen
           </label>
+          <div className="mt-4 inline-block">
+            <JoinQR code={code} size={150} />
+          </div>
         </div>
         <div className="flex flex-wrap gap-3">
           <button onClick={() => sfx("correct")} className="rounded-2xl bg-accent px-6 py-4 font-display text-xl text-accent-foreground">✓ CORRECT</button>
