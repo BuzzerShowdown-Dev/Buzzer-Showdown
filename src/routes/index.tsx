@@ -39,7 +39,7 @@ function Index() {
   return (
     <main className="mx-auto flex min-h-screen max-w-md flex-col justify-center gap-10 px-6 py-12">
       <div className="text-center">
-        <h1 className="glow-text text-7xl text-primary">BUZZER SHOWDOWN</h1>
+        <h1 className="glow-text text-5xl leading-tight text-primary sm:text-7xl">BUZZER SHOWDOWN</h1>
         <p className="mt-3 text-lg text-muted-foreground">The quiz show buzzer</p>
       </div>
       <form
