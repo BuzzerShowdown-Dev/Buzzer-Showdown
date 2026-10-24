@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useCallback, useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { JoinQR } from "@/components/JoinQR";
 import { addBuzz, loadRoom, type Buzz, type Player, type Room } from "@/lib/game";
 
 export const Route = createFileRoute("/screen/$code")({
@@ -51,7 +52,7 @@ function ScreenPage() {
   const ranked = [...players].sort((a, b) => b.score - a.score);
 
   return (
-    <div className="flex min-h-screen flex-row">
+    <div className="relative flex min-h-screen flex-row">
       <main className="flex min-w-0 flex-1 flex-col items-center justify-center gap-6 px-4 py-10 text-center">
         <p className="text-xs uppercase tracking-widest text-muted-foreground sm:text-lg">Room {code} · Round {room.round}</p>
         {first ? (
@@ -77,6 +78,9 @@ function ScreenPage() {
           </ol>
         </aside>
       )}
+      <div className="absolute bottom-3 left-3 hidden sm:block">
+        <JoinQR code={code} size={130} />
+      </div>
     </div>
   );
 }
