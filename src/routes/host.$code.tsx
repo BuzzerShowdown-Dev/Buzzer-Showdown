@@ -3,6 +3,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import type { RealtimeChannel } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
 import { JoinQR } from "@/components/JoinQR";
+import { IdleWarning } from "@/components/IdleWarning";
 import { addBuzz, keepRoomAlive, AUTO_RESET_MS, FREEZE_LIMIT, loadRoom, playUrl, preloadSounds, subscribeRoom, uploadSound, type Buzz, type Player, type Room } from "@/lib/game";
 
 export const Route = createFileRoute("/host/$code")({
@@ -84,6 +85,7 @@ function HostPage() {
 
   return (
     <main className="mx-auto max-w-6xl space-y-6 px-4 py-6">
+      <IdleWarning code={code} lastActivity={room.last_activity} onDeleted={refresh} />
       <header className="flex flex-wrap items-end justify-between gap-4">
         <div>
           <p className="text-sm uppercase tracking-widest text-muted-foreground">Room code</p>

@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useCallback, useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { IdleWarning } from "@/components/IdleWarning";
 import { addBuzz, keepRoomAlive, isFrozen, loadRoom, playUrl, preloadSounds, subscribeRoom, type Buzz, type Player, type Room } from "@/lib/game";
 
 export const Route = createFileRoute("/room/$code")({
@@ -89,6 +90,7 @@ function PlayerPage() {
   if (!me)
     return (
       <Center>
+        <IdleWarning code={code} lastActivity={room.last_activity} onDeleted={refresh} />
         <p className="font-display text-xl text-muted-foreground">ROOM {code}</p>
         <form onSubmit={join} className="mt-6 w-full max-w-sm space-y-3">
           <input
@@ -106,6 +108,7 @@ function PlayerPage() {
 
   return (
     <main className="flex h-[100dvh] flex-col items-center justify-between overflow-hidden px-4 py-6 select-none">
+      <IdleWarning code={code} lastActivity={room.last_activity} onDeleted={refresh} />
       <div className="text-center">
         <p className="text-sm uppercase tracking-widest text-muted-foreground">Room {code} · Round {round} · {me.score} pts</p>
         <h1 className="glow-text mt-1 break-all text-5xl text-primary">{me.name}</h1>

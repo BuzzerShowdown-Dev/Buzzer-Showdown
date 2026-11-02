@@ -1,6 +1,11 @@
 import { supabase } from "@/integrations/supabase/client";
 
-export type Room = { code: string; round: number; buzzer_url: string | null; correct_url: string | null; wrong_url: string | null; show_leaderboard?: boolean; auto_reset?: boolean; freeze_mode?: boolean; freeze_since_round?: number };
+export type Room = { code: string; round: number; buzzer_url: string | null; correct_url: string | null; wrong_url: string | null; show_leaderboard?: boolean; auto_reset?: boolean; freeze_mode?: boolean; freeze_since_round?: number; last_activity?: string };
+
+/** Rooms with no game activity for this long are deleted. */
+export const IDLE_MS = 30 * 60 * 1000;
+/** Show the deletion countdown during the final stretch. */
+export const IDLE_WARN_MS = 5 * 60 * 1000;
 
 /** Buzzes allowed per player in freeze mode before they're frozen out. */
 export const FREEZE_LIMIT = 2;
