@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useCallback, useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { addBuzz, isFrozen, loadRoom, playUrl, preloadSounds, subscribeRoom, type Buzz, type Player, type Room } from "@/lib/game";
+import { addBuzz, keepRoomAlive, isFrozen, loadRoom, playUrl, preloadSounds, subscribeRoom, type Buzz, type Player, type Room } from "@/lib/game";
 
 export const Route = createFileRoute("/room/$code")({
   head: ({ params }) => ({
@@ -44,7 +44,8 @@ function PlayerPage() {
         return r;
       });
     }, (b) => setBuzzes((l) => addBuzz(l, b)));
-    return () => void supabase.removeChannel(ch);
+    const stop = keepRoomAlive(code);
+    return () => { stop(); void supabase.removeChannel(ch); };
   }, [code, refresh]);
 
   const me = players.find((p) => p.id === playerId);

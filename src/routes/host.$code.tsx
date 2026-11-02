@@ -3,7 +3,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import type { RealtimeChannel } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
 import { JoinQR } from "@/components/JoinQR";
-import { addBuzz, AUTO_RESET_MS, FREEZE_LIMIT, loadRoom, playUrl, preloadSounds, subscribeRoom, uploadSound, type Buzz, type Player, type Room } from "@/lib/game";
+import { addBuzz, keepRoomAlive, AUTO_RESET_MS, FREEZE_LIMIT, loadRoom, playUrl, preloadSounds, subscribeRoom, uploadSound, type Buzz, type Player, type Room } from "@/lib/game";
 
 export const Route = createFileRoute("/host/$code")({
   head: ({ params }) => ({
@@ -50,7 +50,8 @@ function HostPage() {
       setBuzzes((l) => addBuzz(l, b));
     });
     chRef.current = ch;
-    return () => void supabase.removeChannel(ch);
+    const stop = keepRoomAlive(code);
+    return () => { stop(); void supabase.removeChannel(ch); };
   }, [code, refresh]);
 
   const round = room?.round ?? 0;

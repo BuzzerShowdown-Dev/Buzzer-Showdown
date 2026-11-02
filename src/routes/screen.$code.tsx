@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useCallback, useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { JoinQR } from "@/components/JoinQR";
-import { addBuzz, loadRoom, type Buzz, type Player, type Room } from "@/lib/game";
+import { addBuzz, keepRoomAlive, loadRoom, type Buzz, type Player, type Room } from "@/lib/game";
 
 export const Route = createFileRoute("/screen/$code")({
   head: ({ params }) => ({
@@ -42,7 +42,8 @@ function ScreenPage() {
       })
       .on("postgres_changes", { event: "*", schema: "public", table: "players", filter: `room_code=eq.${code}` }, refresh)
       .subscribe();
-    return () => void supabase.removeChannel(ch);
+    const stop = keepRoomAlive(code);
+    return () => { stop(); void supabase.removeChannel(ch); };
   }, [code, refresh]);
 
   if (room === undefined) return <p className="p-10 text-center">Loading…</p>;
