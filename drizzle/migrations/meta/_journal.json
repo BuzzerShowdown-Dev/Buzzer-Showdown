@@ -36,6 +36,13 @@
       "when": 1793634010008,
       "tag": "0004_room_idle_countdown",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1793634233198,
+      "tag": "0005_end_room",
+      "breakpoints": true
     }
   ]
 }

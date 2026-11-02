@@ -140,6 +140,7 @@ export type Database = {
     Functions: {
       cleanup_idle_rooms: { Args: never; Returns: undefined }
       delete_room_if_idle: { Args: { _code: string }; Returns: boolean }
+      end_room: { Args: { _code: string }; Returns: undefined }
       keep_room: { Args: { _code: string }; Returns: undefined }
     }
     Enums: {
