@@ -82,3 +82,14 @@ export async function loadRoom(code: string) {
   ]);
   return { room: r.data as Room | null, players: (p.data ?? []) as Player[], buzzes: (b.data ?? []) as Buzz[] };
 }
+
+/** Marks the room as in use; rooms nobody has open for 10+ minutes get deleted. Returns a stop function. */
+export function keepRoomAlive(code: string) {
+  const ping = () => {
+    const stale = new Date(Date.now() - 3 * 60 * 1000).toISOString();
+    supabase.from("rooms").update({ last_seen: new Date().toISOString() }).eq("code", code).lt("last_seen", stale).then(() => {});
+  };
+  ping();
+  const t = setInterval(ping, 60 * 1000);
+  return () => clearInterval(t);
+}
