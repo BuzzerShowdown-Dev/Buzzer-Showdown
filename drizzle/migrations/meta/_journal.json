@@ -29,6 +29,13 @@
       "when": 1793633823274,
       "tag": "0003_room_auto_cleanup",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1793634010008,
+      "tag": "0004_room_idle_countdown",
+      "breakpoints": true
     }
   ]
 }

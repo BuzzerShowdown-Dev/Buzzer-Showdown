@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useCallback, useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { JoinQR } from "@/components/JoinQR";
+import { IdleWarning } from "@/components/IdleWarning";
 import { addBuzz, keepRoomAlive, loadRoom, type Buzz, type Player, type Room } from "@/lib/game";
 
 export const Route = createFileRoute("/screen/$code")({
@@ -54,6 +55,7 @@ function ScreenPage() {
 
   return (
     <div className="relative flex min-h-screen flex-row">
+      <IdleWarning code={code} lastActivity={room.last_activity} onDeleted={refresh} />
       <main className="flex min-w-0 flex-1 flex-col items-center justify-center gap-6 px-4 py-10 text-center">
         <p className="text-xs uppercase tracking-widest text-muted-foreground sm:text-lg">Room {code} · Round {room.round}</p>
         {first ? (
