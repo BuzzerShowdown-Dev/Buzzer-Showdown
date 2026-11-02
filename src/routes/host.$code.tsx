@@ -125,6 +125,16 @@ function HostPage() {
           >
             AUTO + FREEZE AFTER {FREEZE_LIMIT}: {room.freeze_mode ? "ON" : "OFF"}
           </button>
+          <button
+            onClick={async () => {
+              if (!window.confirm("End this room for everyone? Players and scores will be deleted.")) return;
+              await supabase.rpc("end_room", { _code: code });
+              window.location.href = "/";
+            }}
+            className="rounded-2xl border-2 border-destructive px-6 py-4 font-display text-xl text-destructive"
+          >
+            END ROOM
+          </button>
         </div>
       </header>
 
