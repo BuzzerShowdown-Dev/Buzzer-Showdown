@@ -3,7 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { IDLE_MS, IDLE_WARN_MS } from "@/lib/game";
 
 /** Banner counting down to auto-deletion of an inactive room. */
-export function IdleWarning({ code, lastActivity, onDeleted }: { code: string; lastActivity?: string | null; onDeleted: () => void }) {
+export function IdleWarning({ code, lastActivity, onDeleted }: { code: string; lastActivity?: string | null | undefined; onDeleted: () => void }) {
   const [now, setNow] = useState(() => Date.now());
   useEffect(() => {
     const t = setInterval(() => setNow(Date.now()), 1000);
