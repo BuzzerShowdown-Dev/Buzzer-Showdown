@@ -1,9 +1,7 @@
 # Buzzer Showdown
 
-Build a quiz buzzer web app with the following features:
-
-Player side:
-
+**Live app**: https://buzzer-showdown.lovable.app
+**Features**
 A full-screen big red buzzer button
 
 On press, play a custom audio file (host uploads the sound)
@@ -32,11 +30,4 @@ Works on mobile browsers (responsive, big touch targets)
 
 No login required — just enter a name to join
 
-
 **Live app**: https://buzzer-showdown.lovable.app
-
-
-cd <repository-name>
-npm i
-npm run dev
-```
