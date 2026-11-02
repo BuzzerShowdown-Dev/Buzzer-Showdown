@@ -97,6 +97,7 @@ export type Database = {
           created_at: string
           freeze_mode: boolean
           freeze_since_round: number
+          last_seen: string
           round: number
           show_leaderboard: boolean
           wrong_url: string | null
@@ -109,6 +110,7 @@ export type Database = {
           created_at?: string
           freeze_mode?: boolean
           freeze_since_round?: number
+          last_seen?: string
           round?: number
           show_leaderboard?: boolean
           wrong_url?: string | null
@@ -121,6 +123,7 @@ export type Database = {
           created_at?: string
           freeze_mode?: boolean
           freeze_since_round?: number
+          last_seen?: string
           round?: number
           show_leaderboard?: boolean
           wrong_url?: string | null
@@ -132,7 +135,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      cleanup_idle_rooms: { Args: never; Returns: undefined }
     }
     Enums: {
       [_ in never]: never
