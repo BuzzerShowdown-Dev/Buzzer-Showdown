@@ -2,7 +2,7 @@ import { useState } from "react";
 import { X } from "lucide-react";
 
 /** Set this to the new app's download page URL when ready. */
-const DOWNLOAD_URL = "";
+const DOWNLOAD_URL = "https://buzzershowdown-dev.github.io/Buzzer-Showdown-Welcome-Screen/#downloads";
 
 /** Announcement popup shown once per visit: this site is the old version. */
 export function NewVersionPopup() {
