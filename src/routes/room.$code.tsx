@@ -7,9 +7,9 @@ import { addBuzz, keepRoomAlive, isFrozen, loadRoom, playUrl, preloadSounds, sub
 export const Route = createFileRoute("/room/$code")({
   head: ({ params }) => ({
     meta: [
-      { title: `Room ${params.code} — Buzzer Showdown!` },
+      { title: `Room ${params.code} — Buzzer Showdown: Legacy Edition` },
       { name: "description", content: `Join quiz room ${params.code} and hit the buzzer.` },
-      { property: "og:title", content: `Join room ${params.code} on Buzzer Showdown!` },
+      { property: "og:title", content: `Join room ${params.code} on Buzzer Showdown: Legacy Edition` },
       { property: "og:description", content: "Enter your name and get ready to buzz." },
     ],
   }),
