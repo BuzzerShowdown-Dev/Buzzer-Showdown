@@ -9,9 +9,9 @@ import { addBuzz, keepRoomAlive, AUTO_RESET_MS, FREEZE_LIMIT, loadRoom, playUrl,
 export const Route = createFileRoute("/host/$code")({
   head: ({ params }) => ({
     meta: [
-      { title: `Host ${params.code} — Buzzer Showdown!` },
+      { title: `Host ${params.code} — Buzzer Showdown: Legacy Edition` },
       { name: "description", content: "Buzzer Showdown: Legacy Edition host control panel: buzz order, sounds and scoreboard." },
-      { property: "og:title", content: `Hosting room ${params.code} — Buzzer Showdown!` },
+      { property: "og:title", content: `Hosting room ${params.code} — Buzzer Showdown: Legacy Edition` },
       { property: "og:description", content: "Run your quiz with live buzz order and scores on Buzzer Showdown: Legacy Edition" },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
